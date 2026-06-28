@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Suppliers{% endblock %}
+{% block content %}
+<h3>Suppliers</h3>
+<div class="card p-3 mb-3">
+  <form method="POST" action="{{ url_for('add_supplier') }}" class="row g-2">
+    <div class="col-md-5"><input class="form-control" name="name" placeholder="Supplier name" required></div>
+    <div class="col-md-5"><input class="form-control" name="contact" placeholder="Contact"></div>
+    <div class="col-md-2"><button class="btn btn-success w-100" type="submit">Add</button></div>
+  </form>
+</div>
+
+<table class="table table-bordered">
+  <thead class="table-light">
+    <tr><th>ID</th><th>Name</th><th>Contact</th><th>Action</th></tr>
+  </thead>
+  <tbody>
+    {% for s in suppliers %}
+    <tr>
+      <td>{{ s['id'] }}</td>
+      <td>{{ s['name'] }}</td>
+      <td>{{ s['contact'] }}</td>
+      <td>
+        {% if session.get('role') == 'admin' %}
+          <a href="{{ url_for('delete_supplier', supplier_id=s['id']) }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete supplier?')">Delete</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,23 @@
+.dark-mode {
+  background: #121212 !important;
+  color: white !important;
+}
+
+.dark-mode .table {
+  background: #1e1e1e;
+  color: white;
+}
+
+.dark-mode .card {
+  background: #1e1e1e;
+  color: white;
+}
+/* Dashboard cards dark mode */
+.dark-mode .dashboard-card {
+  background: #1e1e1e !important;
+  color: white !important;
+}
+
+.dark-mode .text-muted {
+  color: #bbb !important;
+}

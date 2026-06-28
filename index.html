@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<h3 class="fw-bold mb-4">📊 Dashboard Overview</h3>
+
+<div class="row g-4">
+
+  <!-- Total Items -->
+  <div class="col-md-4">
+    <div class="card shadow text-center p-4 dashboard-card">
+      <h6 class="text-muted">Total Items</h6>
+      <h2 class="fw-bold">{{ total_items }}</h2>
+    </div>
+  </div>
+
+  <!-- Total Quantity -->
+  <div class="col-md-4">
+    <div class="card shadow text-center p-4 dashboard-card">
+      <h6 class="text-muted">Total Quantity</h6>
+      <h2 class="fw-bold text-primary">{{ total_quantity }}</h2>
+    </div>
+  </div>
+
+  <!-- Total Value -->
+  <div class="col-md-4">
+    <div class="card shadow text-center p-4 dashboard-card">
+      <h6 class="text-muted">Total Inventory Value</h6>
+      <h2 class="fw-bold text-success">₹ {{ total_value }}</h2>
+    </div>
+  </div>
+
+  <!-- Low Stock -->
+  <div class="col-md-6">
+    <div class="card shadow text-center p-4 border-warning dashboard-card">
+      <h6 class="text-muted">Low Stock Items</h6>
+      <h2 class="fw-bold text-warning">{{ low_stock }}</h2>
+    </div>
+  </div>
+
+  <!-- Expired Items -->
+  <div class="col-md-6">
+    <div class="card shadow text-center p-4 border-danger dashboard-card">
+      <h6 class="text-muted">Expired Items</h6>
+      <h2 class="fw-bold text-danger">{{ expired }}</h2>
+    </div>
+  </div>
+
+</div>
+
+<!-- 🔐 Graph Section (Admin Only) -->
+{% if session.get('role') == 'admin' %}
+
+<hr class="my-5">
+
+<h5 class="fw-semibold mb-4 text-center">📈 Inventory Analytics</h5>
+
+<div class="card shadow p-4 dashboard-card">
+  <div style="width: 350px; height: 350px; margin: auto;">
+    <canvas id="inventoryChart"></canvas>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const ctx = document.getElementById('inventoryChart');
+
+  if (ctx) {
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Low Stock', 'Expired', 'Healthy Stock'],
+        datasets: [{
+          data: [
+            {{ low_stock|int }},
+            {{ expired|int }},
+            {{ (total_items - low_stock - expired)|int }}
+          ]
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+  }
+
+});
+</script>
+
+{% endif %}
+
+<!-- Quick Actions -->
+<hr class="my-4">
+
+<h5 class="fw-semibold mb-3">⚡ Quick Actions</h5>
+
+<div class="d-flex flex-wrap gap-3">
+
+  <a class="btn btn-primary px-4" href="{{ url_for('inventory') }}">
+    📦 Manage Inventory
+  </a>
+
+  <a class="btn btn-secondary px-4" href="{{ url_for('suppliers') }}">
+    🚚 Manage Suppliers
+  </a>
+
+  {% if session.get('role') == 'admin' %}
+  <a class="btn btn-success px-4" href="{{ url_for('register') }}">
+    👤 Create User
+  </a>
+  {% endif %}
+
+</div>
+
+{% endblock %}
